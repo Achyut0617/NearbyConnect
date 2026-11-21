@@ -60,6 +60,10 @@
 | Foreground permission | Location only while the app is open | requestForegroundPermissionsAsync() |
 | CORS | Browser rule: a web page may only call other servers that allow it | backend allows the web app |
 | Bundle | All the app's code packed into one file the phone runs | `npx expo export` builds it |
+| FlatList | React Native list that only draws the rows on screen, so long lists stay fast | place cards in the Feed |
+| useEffect | Run code when a screen opens or when certain values change | reload places when radius changes |
+| Pull-to-refresh | Drag the list down to reload | RefreshControl in the Feed |
+| Stale response | An older, slower request answering after a newer one | requestId ref ignores old answers |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

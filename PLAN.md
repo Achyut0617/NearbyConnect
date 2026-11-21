@@ -118,7 +118,12 @@ no scraping of individuals, no automated social actions.
       expo-secure-store (localStorage on web). Checks: tsc clean, Android +
       web bundles build, expo-doctor 20/20. Backend: CORS for web (100 tests).
       Not yet run on a real phone (needs you + Expo Go).
-- [ ] 12. Feed screen calling /nearby
+- [x] 12. Feed screen calling /nearby
+      Done 2026-11-21: src/mobile/src/app/(tabs)/index.tsx. Permission card if
+      not granted; radius chips (500 m-5 km); place cards with category,
+      distance, "Why this?" reasons, Open in Maps; pull-to-refresh; reloads
+      when interests change; clear 503 / offline messages; ignores stale
+      responses. Checks: tsc clean, Android bundle builds. Not run on a phone yet.
 - [ ] 13. Connect request UI (send/approve)
 - [ ] 14. Push notification on new match / approved connection
 
@@ -129,4 +134,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 11 | Next: step 12 (feed screen) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 12 | Next: step 13 (connect request UI) | Blockers: none (note: Overpass is slow/flaky)
