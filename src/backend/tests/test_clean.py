@@ -140,3 +140,14 @@ def test_distance_zero_and_known_value():
     assert distance_m(18.52, 73.85, 18.52, 73.85) == 0
     # 0.001 degrees of latitude is about 111 m anywhere on Earth.
     assert 110 < distance_m(18.520, 73.85, 18.521, 73.85) < 112
+
+
+# ---------- tuning after the Step 7 real-data test ----------
+
+def test_historic_places_are_culture():
+    assert categorize("historic", "fort") == "culture"
+    assert categorize("historic", "monument") == "culture"
+
+
+def test_schools_are_not_education():
+    assert categorize("amenity", "school") == "other"

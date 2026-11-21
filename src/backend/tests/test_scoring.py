@@ -78,3 +78,9 @@ def test_rank_without_location_still_works():
     ranked = rank_places([RESTAURANT, COWORK], ["startups"])
     assert ranked[0]["name"] == "91springboard"
     assert ranked[0]["distance_m"] is None
+
+
+def test_history_prefers_real_culture_over_event_halls():
+    fort = place("Shaniwar Wada", "culture", "fort")
+    hall = place("Some Event Hall", "event_space", "events_venue")
+    assert score_place(fort, ["history"])[0] > score_place(hall, ["history"])[0]

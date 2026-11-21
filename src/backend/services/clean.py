@@ -33,7 +33,6 @@ TAG_TO_CATEGORY = {
     ("amenity", "library"): "education",
     ("amenity", "university"): "education",
     ("amenity", "college"): "education",
-    ("amenity", "school"): "education",
     ("amenity", "community_centre"): "event_space",
     ("amenity", "conference_centre"): "event_space",
     ("amenity", "events_venue"): "event_space",
@@ -49,10 +48,13 @@ TAG_TO_CATEGORY = {
 }
 
 # If no exact match: fall back on the tag key alone.
-# e.g. any shop=* that isn't coffee -> "shopping"; any office=* -> "office".
+# e.g. any shop=* that isn't coffee -> "shopping"; any office=* -> "office";
+# any historic=* (fort, monument, ruins...) -> "culture".
+# Note: schools are deliberately NOT "education": users don't visit them to network.
 KEY_TO_CATEGORY = {
     "shop": "shopping",
     "office": "office",
+    "historic": "culture",
 }
 
 

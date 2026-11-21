@@ -19,8 +19,9 @@ OVERPASS_URLS = [
 ]
 
 # OSM "tag keys" that describe what kind of place something is.
-# e.g. amenity=cafe, shop=books, leisure=park, tourism=museum, office=coworking
-PLACE_KEYS = ("amenity", "shop", "leisure", "tourism", "office")
+# e.g. amenity=cafe, shop=books, leisure=park, tourism=museum, office=coworking,
+# historic=fort
+PLACE_KEYS = ("amenity", "shop", "leisure", "tourism", "office", "historic")
 
 USER_AGENT = "NearbyConnect/0.1 (dev)"
 TIMEOUT_SECONDS = 25   # per server

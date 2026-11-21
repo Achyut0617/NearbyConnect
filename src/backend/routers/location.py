@@ -1,5 +1,12 @@
-from fastapi import APIRouter
-from pydantic import BaseModel, Field
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, Field, field_validator
+
+from auth import get_optional_user
+from models.user import User
+from routers.profile import MAX_INTERESTS, normalize_interests
+from services.clean import clean_places
+from services.osm_client import OverpassUnavailable, fetch_places
+from services.scoring import rank_places
 
 router = APIRouter()
 
@@ -17,18 +24,48 @@ class NearbyRequest(BaseModel):
     lat: float = Field(..., ge=-90, le=90, description="Latitude, -90 to 90")
     lon: float = Field(..., ge=-180, le=180, description="Longitude, -180 to 180")
     radius_m: int = Field(1000, gt=0, le=MAX_RADIUS_M, description="Search radius in metres")
+    # Optional. If left out and the user is logged in, their saved interests are used.
+    interests: list[str] | None = Field(None, max_length=MAX_INTERESTS)
+    limit: int = Field(50, gt=0, le=200, description="Max places to return")
+
+    @field_validator("interests")
+    @classmethod
+    def clean_interests(cls, v):
+        return None if v is None else normalize_interests(v)
+
+
+def get_place_fetcher():
+    """Which function fetches raw places. Tests replace this with a fake."""
+    return fetch_places
 
 
 @router.post("/nearby")
-def nearby(req: NearbyRequest):
-    """Accept a location and confirm it's valid.
+def nearby(req: NearbyRequest,
+           user: User | None = Depends(get_optional_user),
+           fetch=Depends(get_place_fetcher)):
+    """Return nearby places ranked by how well they match the user's interests.
 
     Privacy: we do NOT log or store the coordinates here.
-    Place search is added in Step 3, so `places` is empty for now.
     """
+    if req.interests is not None:
+        interests = req.interests
+    elif user is not None:
+        interests = user.interests or []
+    else:
+        interests = []
+
+    try:
+        raw = fetch(req.lat, req.lon, req.radius_m)
+    except OverpassUnavailable:
+        raise HTTPException(
+            status_code=503,
+            detail="Place data service is busy right now. Please try again shortly.",
+        )
+
+    ranked = rank_places(clean_places(raw), interests, req.lat, req.lon)
     return {
-        "lat": req.lat,
-        "lon": req.lon,
         "radius_m": req.radius_m,
-        "places": [],
+        "interests_used": interests,
+        "count": min(len(ranked), req.limit),
+        "places": ranked[: req.limit],
     }

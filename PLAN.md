@@ -62,10 +62,19 @@ no scraping of individuals, no automated social actions.
       the name/OSM type. Each score has human-readable reasons. rank_places()
       sorts by score, then distance.
 
-- [ ] 7. Combine into /nearby response
+- [x] 7. Combine into /nearby response
       Files: src/backend/routers/location.py (update)
       Do: /nearby now returns places sorted by relevance score
       Check: manual test with real coordinates, inspect the ranked output
+      Done 2026-11-21: /nearby = fetch -> clean -> score -> sort. Interests
+      from body, else from saved profile when logged in. 503 if Overpass is
+      down. Real test near Shaniwar Wada (Pune) returned a sensible ranking
+      in 54 s ("Captain Coffee" top for startups/coffee/reading/history).
+      Tuning from that output: added historic=* (-> culture), schools ->
+      "other", culture interests give event halls 1 pt not 2. Re-run after
+      tuning got 503 (Overpass busy). Handled correctly. Server log had 0
+      coordinates. Total tests: 64.
+      Known issue: real requests take ~30-60 s because public Overpass is slow.
 
 ## Phase 2 — Opted-in people matching (NearbyConnect users only)
 
@@ -98,4 +107,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 6 | Next: step 7 (combine into /nearby) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 7 | Next: step 8 (location opt-in + storage) | Blockers: none (note: Overpass is slow/flaky)

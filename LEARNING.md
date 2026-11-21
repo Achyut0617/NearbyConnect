@@ -34,6 +34,10 @@
 | Relevance score | A number saying how well something matches what the user wants | coworking space = 3 points for "startups" |
 | Regex word boundary (\b) | Regex rule meaning "start/end of a whole word" | "ai" matches "AI Lab" but not "Sai" |
 | Sort key | The value(s) Python sorts by; a tuple sorts by the first, then the second... | (-score, distance) = best score, then nearest |
+| Pipeline | Several steps chained, each feeding the next | fetch -> clean -> score -> sort in /nearby |
+| HTTP 503 | "Service unavailable": try again later | /nearby when every Overpass server is busy |
+| Dependency override | In tests, swap a real piece (like the internet fetch) for a fake | app.dependency_overrides[get_place_fetcher] |
+| Tuning | Adjusting rules after looking at real results | schools -> "other" after seeing them rank high |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved
@@ -51,6 +55,14 @@
   tests use a fake server; live test is opt-in and re-run later | Lesson:
   free shared services go down. Always plan for "the other server didn't
   answer", and keep your normal tests independent of the internet.
+
+- 2026-11-21: Problem: first real /nearby ranking had schools and wedding
+  halls near the top, and Shaniwar Wada was missing | Cause: rules were
+  guessed without real data; forts use the OSM key `historic`, which we
+  didn't ask for | Fix: added `historic`, schools -> other, smaller
+  history -> event hall points; added tests for each | Lesson: unit tests
+  prove the code does what you said; only real data shows whether what you
+  said was a good idea.
 
 ## Still confusing
 - (fill in as we go)
