@@ -30,12 +30,16 @@ no scraping of individuals, no automated social actions.
       (`pytest -m network`) passed on retry (46 s). Public Overpass servers
       are slow/flaky (504/502/timeouts seen), so the client tries 3 servers.
 
-- [ ] 4. Data cleaning + validation
+- [x] 4. Data cleaning + validation
       Files: src/backend/services/clean.py
       Do: dedupe places, drop entries missing a name, normalize place "type"
           into a small fixed category set (food, coworking, event space, etc.)
       Check: test with deliberately messy/duplicate input, confirm output is
           deduped and categorized
+      Done 2026-11-21: 14 tests in tests/test_clean.py pass. Drops blank names
+      and bad coords, tidies names, dedupes by OSM id or same name within 50 m,
+      maps tags to 11 categories (food, cafe, coworking, education,
+      event_space, culture, outdoors, fitness, shopping, office, other).
 
 - [ ] 5. User interest profile (minimal)
       Files: src/backend/models/user.py, src/backend/routers/profile.py
@@ -85,4 +89,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 3 | Next: step 4 (data cleaning + validation) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 4 | Next: step 5 (user interest profile) | Blockers: none (note: Overpass is slow/flaky)

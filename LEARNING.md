@@ -18,6 +18,10 @@
 | Fallback | If plan A fails, automatically try plan B | Try the next Overpass server |
 | Mock / fake server | A pretend server inside a test, so tests run offline and predictably | httpx.MockTransport in test_osm_client.py |
 | pytest marker | A label on a test so you can choose to run or skip it | @pytest.mark.network, run with `pytest -m network` |
+| Data cleaning | Fixing or removing messy entries before using the data | Dropping places with blank names |
+| De-duplication | Removing repeated copies of the same thing | Same cafe mapped as point + building |
+| Haversine formula | Maths for the distance between two GPS points on a round Earth | distance_m() in clean.py |
+| Normalising / categorising | Turning many detailed labels into a few simple groups | amenity=cafe and shop=coffee both become "cafe" |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved
