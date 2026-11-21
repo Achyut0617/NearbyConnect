@@ -161,6 +161,56 @@ export const api = {
 
   clearPushToken: (token: string) =>
     request<{ notifications: boolean }>('/me/push-token', { method: 'DELETE', token }),
+
+  areaTrends: (token: string, place: string) =>
+    request<AreaTrendsResult>(`/area-trends?place=${encodeURIComponent(place)}`, { token }),
+
+  analyzeSelf: (token: string, body: AnalyzeBody) =>
+    request<AnalyzeResult>('/me/analyze', { method: 'POST', token, body: { consent: true, ...body } }),
+};
+
+// ---------- Phase 4 types ----------
+
+export type PlaceFacts = {
+  name: string | null;
+  state: string | null;
+  district: string | null;
+  place_type: string | null;
+  summary: string | null;
+  sources: string[];
+};
+
+export type Trend = { term: string; distinct_authors: number; mentions: number };
+
+export type AreaTrendsResult = {
+  facts: PlaceFacts;
+  terms: { keywords: string[]; hashtags: string[] };
+  trends: {
+    sources_used: string[];
+    total_posts: number;
+    topics: Trend[];
+    hashtags: Trend[];
+    sentiment: { positive: number; negative: number; mood: string };
+    note: string;
+  };
+  sources_skipped?: Record<string, string>;
+};
+
+export type AnalyzeBody = { posts: string[]; post_hours?: number[]; hashtags?: string[] };
+
+export type Occupation = {
+  label: string;
+  confidence: number;
+  basis: string;
+  probabilities: Record<string, number>;
+  reasons: string[];
+};
+
+export type AnalyzeResult = {
+  model: string;
+  occupation: Occupation;
+  suggested_interests: string[];
+  note: string;
 };
 
 /** "AI, startups,  coffee" -> ["AI", "startups", "coffee"] */

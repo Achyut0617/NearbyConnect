@@ -34,6 +34,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Feed' }} />
+      <Tabs.Screen name="area" options={{ title: 'Area' }} />
       <Tabs.Screen name="people" options={{ title: 'People' }} />
       <Tabs.Screen name="requests" options={{ title: 'Requests' }} />
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />

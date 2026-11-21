@@ -1,5 +1,5 @@
 // Profile tab: your name, edit interests, location permission status, sign out.
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, Linking, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -118,6 +118,12 @@ export default function ProfileScreen() {
               : 'Not decided yet.'}
         </Muted>
         {permission !== 'granted' && <Button title="Allow location" kind="secondary" onPress={askPermission} />}
+      </Card>
+
+      <Card>
+        <Text style={styles.cardTitle}>Analyse my account</Text>
+        <Muted>Estimate your occupation and interests from your own posts (nothing stored).</Muted>
+        <Button title="Open self-analysis" kind="secondary" onPress={() => router.push('/analyze')} />
       </Card>
 
       <Card>
