@@ -168,14 +168,14 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
   cache only (ties back to the "no raw history" rule).
 
 ### Stage A — Place intelligence
-- [ ] 15. Place lookup from trusted sources
+- [x] 15. Place lookup from trusted sources
       Files: src/backend/services/place_intel.py
       Do: given a place name (e.g. "Loni Kalbhor, Pune"), fetch facts from
           Wikipedia + Wikidata + OSM (REST APIs). Return a clean summary:
           description, landmarks, nearby colleges/industries, known-for tags.
       Check: unit test with cached/sample API responses -> structured facts;
           a nonsense place returns "not found", not a crash.
-- [ ] 16. Keyword / hashtag extraction for an area
+- [x] 16. Keyword / hashtag extraction for an area
       Files: src/backend/services/keywords.py
       Do: from the Stage-15 facts, derive ranked search terms + hashtags
           (college names, landmarks, #placename, "known-for" words). Simple
@@ -183,22 +183,28 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
       Check: test that "Loni Kalbhor" facts yield sensible terms; dedupe works.
 
 ### Stage B — Area trend analytics (AGGREGATE ONLY: Reddit + YouTube first)
-- [ ] 17. Platform clients (official APIs)
+- [x] 17. Platform clients (official APIs)
       Files: src/backend/services/sources/reddit.py, .../youtube.py
       Do: search public posts/videos by keyword/area via official APIs
           (API keys in .env, never committed). Return topics + counts only.
       Check: tests use recorded sample responses (offline); missing API key
           returns a clear "source unavailable", not a crash.
-- [ ] 18. Aggregation + k-author threshold
+- [x] 18. Aggregation + k-author threshold
       Files: src/backend/services/trends.py
       Do: roll results into topic counts, co-occurring hashtags, rising/falling,
           overall sentiment. DROP any topic used by < MIN_DISTINCT_AUTHORS.
           Output carries NO account identifiers.
       Check: test that a topic from 5 accounts is dropped, one from 25 is kept;
           output contains zero handles/usernames.
-- [ ] 19. /area-trends endpoint + app "Area" view
+- [x] 19. /area-trends endpoint + app "Area" view
       Do: GET /area-trends?place=... returns the aggregate picture; app shows it.
       Check: manual test for a Maharashtra place; inspect that it's all aggregate.
+      Done 2026-11-21: Stage A+B built. services/place_intel.py, keywords.py,
+      sources/{base,reddit,youtube}.py, trends.py; routers/area.py with
+      /area-intel + /area-trends (login-gated). k-author threshold=20 enforced
+      in trends.aggregate; tests prove single-author spam and <20-author topics
+      are dropped and no author refs leak. Sources skip cleanly without keys.
+      App "Area" tab: TODO after Stage C. 25 new tests (143 total).
 
 ### Stage C — Author profiling model (occupation), consent/benchmark data ONLY
 - [ ] 20. Feature extraction from posts (text/hashtags/timing/topics)

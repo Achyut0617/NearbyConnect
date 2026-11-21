@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db import create_tables
-from routers import connect, location, people, profile, push_tokens, sharing
+from routers import area, connect, location, people, profile, push_tokens, sharing
 
 
 @asynccontextmanager
@@ -31,6 +31,7 @@ app.include_router(sharing.router)
 app.include_router(people.router)
 app.include_router(connect.router)
 app.include_router(push_tokens.router)
+app.include_router(area.router)
 
 
 @app.get("/health")
