@@ -147,6 +147,88 @@ no scraping of individuals, no automated social actions.
         npx eas-cli@latest init        (adds extra.eas.projectId to app.json)
         npx eas-cli@latest build --profile development --platform android
 
+## Phase 4 — Place intelligence + area trends + author profiling (web scraping / NLP)
+Goal: a resume-grade scraping + data-cleaning + NLP pipeline. Scope: start with
+Maharashtra, then widen. Build in the order Stage A -> B -> C.
+
+### Privacy boundary for ALL of Phase 4 (do not cross)
+- NO building a list of individual social accounts tied to a place, and NO
+  predicting who a specific real person is. That identifies/profiles people
+  who never consented — violates CLAUDE.md hard constraint #1 and the law
+  (India DPDP Act 2023), and gets accounts banned by the platforms.
+- Area analytics are AGGREGATE ONLY: a topic/hashtag is shown only if used by
+  >= MIN_DISTINCT_AUTHORS (start at 20) different accounts. Never list account
+  names, handles, or per-account data in any output.
+- The profiling MODEL (Stage C) runs ONLY on: (a) public research/benchmark
+  datasets whose licence allows it, and (b) a NearbyConnect user analysing
+  THEIR OWN linked account with explicit consent. Never on scraped strangers.
+- Scrape only via official APIs / open sources that permit it; obey robots.txt
+  and rate limits; identify with a generic User-Agent (no personal info).
+- Nothing from Stage B/C scraping is stored long-term: short-lived in-memory
+  cache only (ties back to the "no raw history" rule).
+
+### Stage A — Place intelligence
+- [ ] 15. Place lookup from trusted sources
+      Files: src/backend/services/place_intel.py
+      Do: given a place name (e.g. "Loni Kalbhor, Pune"), fetch facts from
+          Wikipedia + Wikidata + OSM (REST APIs). Return a clean summary:
+          description, landmarks, nearby colleges/industries, known-for tags.
+      Check: unit test with cached/sample API responses -> structured facts;
+          a nonsense place returns "not found", not a crash.
+- [ ] 16. Keyword / hashtag extraction for an area
+      Files: src/backend/services/keywords.py
+      Do: from the Stage-15 facts, derive ranked search terms + hashtags
+          (college names, landmarks, #placename, "known-for" words). Simple
+          scoring first (frequency/importance), embeddings later.
+      Check: test that "Loni Kalbhor" facts yield sensible terms; dedupe works.
+
+### Stage B — Area trend analytics (AGGREGATE ONLY: Reddit + YouTube first)
+- [ ] 17. Platform clients (official APIs)
+      Files: src/backend/services/sources/reddit.py, .../youtube.py
+      Do: search public posts/videos by keyword/area via official APIs
+          (API keys in .env, never committed). Return topics + counts only.
+      Check: tests use recorded sample responses (offline); missing API key
+          returns a clear "source unavailable", not a crash.
+- [ ] 18. Aggregation + k-author threshold
+      Files: src/backend/services/trends.py
+      Do: roll results into topic counts, co-occurring hashtags, rising/falling,
+          overall sentiment. DROP any topic used by < MIN_DISTINCT_AUTHORS.
+          Output carries NO account identifiers.
+      Check: test that a topic from 5 accounts is dropped, one from 25 is kept;
+          output contains zero handles/usernames.
+- [ ] 19. /area-trends endpoint + app "Area" view
+      Do: GET /area-trends?place=... returns the aggregate picture; app shows it.
+      Check: manual test for a Maharashtra place; inspect that it's all aggregate.
+
+### Stage C — Author profiling model (occupation), consent/benchmark data ONLY
+- [ ] 20. Feature extraction from posts (text/hashtags/timing/topics)
+      Files: src/backend/services/profiling/features.py
+      Do: turn a set of posts into features (topic mix, active hours, vocab,
+          hashtag categories). Input is a dataset row or a consented user's own
+          posts — never a scraped stranger.
+      Check: unit test on sample post sets -> feature vector.
+- [ ] 21. Occupation estimator v1 (explainable formula) + evaluation
+      Files: src/backend/services/profiling/estimate.py
+      Do: Bayes-style scoring over classes (student/teacher/researcher/
+          industry/other) with per-class probabilities AND a plain "because..."
+          explanation. Evaluate on a licensed public benchmark; report accuracy
+          + calibration.
+      Check: evaluation script prints real metrics; probabilities sum ~1.
+- [ ] 22. Occupation estimator v2 (trained model) + compare
+      Files: src/backend/services/profiling/model.py
+      Do: logistic-regression (or similar) version; compare vs v1 on the same
+          benchmark. Document which wins and why.
+      Check: metrics table v1 vs v2 reproducible from a script.
+- [ ] 23. Synthetic noisy-profile generator (for entity-resolution testing)
+      Files: src/backend/services/profiling/synthetic.py
+      Do: generate N fake profiles with typos/dupes/nicknames/missing fields
+          AND known ground-truth labels, for measuring accuracy safely.
+      Check: generator is seedable/reproducible; ground truth is recoverable.
+- [ ] 24. Opt-in "analyse my own account" in the app
+      Do: a user links THEIR account, consents, gets their own estimated
+          interests/occupation + "why". Same model, with consent. Never others.
+      Check: nothing runs without an explicit consent flag; test the false case.
+
 ## Explicitly deferred / out of scope for now
 - Scraping individual people's social profiles — not building this, ever.
 - Automated follow/connect on LinkedIn/Instagram/X — ToS violation, skip.
@@ -154,7 +236,10 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 14 (ALL PLANNED STEPS DONE) | Next: you test on a real phone
-and give feedback | Known limits: Overpass slow (30-60 s) / sometimes 503; push
-needs a development build; no DB migrations (delete dev nearbyconnect.db if
-tables change); lost token = lost account | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 14 (Phases 1-3 done). Phase 4 (steps 15-24) designed & agreed,
+not started. | Next: step 15 (place lookup) when you say go; still want to test
+the app on a real phone too. | Phase 4 scope: Maharashtra first. Aggregate-only
+area trends (Reddit+YouTube), occupation model on consent/benchmark data only,
+NO profiling of specific strangers (see Phase 4 privacy boundary above).
+Known limits: Overpass slow (30-60 s) / sometimes 503; push needs a dev build;
+no DB migrations; lost token = lost account | Blockers: none

@@ -59,3 +59,25 @@
 - If that persists: add Geoapify (same OSM data, reliable servers, free key)
   or Foursquare Places (better networking-style categories, free tier).
   Both can return the same {name, type, lat, lon} shape as osm_client.
+
+## 2026-11-21 — Phase 4 scope: scraping/NLP without profiling strangers
+- Wanted: show web-scraping, messy-data, search-optimisation and custom-maths
+  skills on the resume; originally framed as "scrape social media, find
+  accounts in a small area (e.g. Shitole Wasti), predict who each person is".
+- Rejected the "identify/profile specific real accounts tied to a place" part:
+  it singles out non-consenting people (worse in a small area, where it is
+  effectively identifying them), breaks platform ToS, and violates India's
+  DPDP Act 2023 + CLAUDE.md hard constraint #1. "Not saving / not publishing"
+  does not remove the harm — it happens on screen, and resume code goes public
+  on GitHub where anyone can run it.
+- Chose an equivalent-skill design that stays legal:
+  - Stage A: place intelligence from Wikipedia/Wikidata/OSM.
+  - Stage B: AGGREGATE-ONLY area trend analytics via official APIs
+    (Reddit, YouTube first), with a k-author threshold; no account names.
+  - Stage C: occupation/author-profiling MODEL trained+evaluated on licensed
+    public benchmark datasets, and usable by a NearbyConnect user on THEIR OWN
+    linked account with consent — never on scraped strangers.
+  - Synthetic noisy profiles for safe accuracy measurement.
+- Same demonstrable skills (crawling, cleaning, entity resolution, ranking
+  maths, probabilistic classification, evaluation), without the legal/ethical
+  landmine. Written up as PLAN.md Phase 4, steps 15-24.
