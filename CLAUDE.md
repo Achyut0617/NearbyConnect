@@ -11,7 +11,7 @@ individuals, no automated follow/connect on any third-party platform.
 ## Tech stack
 - Backend: Python 3.12, FastAPI
 - DB: PostgreSQL + pgvector (for interest/embedding matching)
-- Mobile: React Native (Expo)
+- Mobile: React Native (Expo SDK 58, Expo Router, TypeScript)
 - Data sources (v1, free tier): OpenStreetMap/Nominatim + Overpass API for
   places; user-submitted profiles for the "people" side
 - Later (paid, deferred): Google Places API, Eventbrite/Meetup API
@@ -28,8 +28,14 @@ individuals, no automated follow/connect on any third-party platform.
 ## How to run
 - Backend install: `cd src/backend && pip install -r requirements.txt`
 - Backend run: `uvicorn main:app --reload`
+  (for a phone on the same Wi-Fi: `uvicorn main:app --reload --host 0.0.0.0`)
 - Test: `pytest -q` (from src/backend)
-- Mobile: (added once we reach that step)
+- Mobile install: `cd src/mobile && npm install`
+- Mobile config: copy `src/mobile/.env.example` to `src/mobile/.env` and set
+  EXPO_PUBLIC_API_URL to your computer's Wi-Fi IP, e.g. http://192.168.1.10:8000
+- Mobile run: `npx expo start` (scan QR with Expo Go), or press `w` for web
+- Mobile checks: `npx tsc --noEmit` and `npx expo-doctor`
+- Add mobile packages ONLY with `npx expo install <pkg>` (SDK-matched versions)
 
 ## Rules for Claude
 - I am a beginner. Explain in simple English, one step at a time.

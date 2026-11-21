@@ -50,6 +50,16 @@
 | State machine | Something that moves between fixed states by fixed rules | pending -> accepted / declined, never back |
 | HTTP 403 vs 404 | 403 = "you're not allowed"; 404 = "not found" (also used so strangers can't tell a thing exists) | sender accepting own request = 403; outsider = 404 |
 | Hook | An empty function called at a key moment so features can plug in later | on_request_accepted() for push notifications |
+| Expo | Toolkit that makes React Native apps easier to build and test | `npx expo start`, scan the QR in Expo Go |
+| Expo Go | Phone app that runs your project without building it yourself | Test Steps 11-13 instantly |
+| Development build | Your own custom version of the app, needed for some native features | Push notifications (Step 14) |
+| Expo Router | Navigation where each file in src/app is a screen | src/app/(tabs)/profile.tsx = Profile tab |
+| TypeScript | JavaScript with types; catches mistakes before running | `npx tsc --noEmit` |
+| React context | Share data (like the login) with every screen without passing it down by hand | SessionProvider / useSession() |
+| Secure storage | Encrypted storage on the phone for secrets | login token in expo-secure-store |
+| Foreground permission | Location only while the app is open | requestForegroundPermissionsAsync() |
+| CORS | Browser rule: a web page may only call other servers that allow it | backend allows the web app |
+| Bundle | All the app's code packed into one file the phone runs | `npx expo export` builds it |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

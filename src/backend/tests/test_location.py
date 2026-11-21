@@ -115,3 +115,13 @@ def test_overpass_down_returns_503(client):
     r = post(client)
     assert r.status_code == 503
     assert "try again" in r.json()["detail"]
+
+
+def test_cors_preflight_allows_browser_app(client):
+    r = client.options("/nearby", headers={
+        "Origin": "http://localhost:8081",
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization,content-type",
+    })
+    assert r.status_code == 200
+    assert r.headers.get("access-control-allow-origin") in ("*", "http://localhost:8081")

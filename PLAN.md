@@ -110,7 +110,14 @@ no scraping of individuals, no automated social actions.
 
 ## Phase 3 — Mobile app (after backend phases 1-2 are working and tested)
 
-- [ ] 11. React Native app skeleton + GPS permission flow
+- [x] 11. React Native app skeleton + GPS permission flow
+      Done 2026-11-21: Expo SDK 58 + Expo Router app in src/mobile. Onboarding
+      (privacy promises -> sign-up with interests -> foreground-only GPS
+      permission, "Not now" allowed). Tabs: Feed/People/Requests (placeholders),
+      Profile (edit interests, permission status, sign out). Token in
+      expo-secure-store (localStorage on web). Checks: tsc clean, Android +
+      web bundles build, expo-doctor 20/20. Backend: CORS for web (100 tests).
+      Not yet run on a real phone (needs you + Expo Go).
 - [ ] 12. Feed screen calling /nearby
 - [ ] 13. Connect request UI (send/approve)
 - [ ] 14. Push notification on new match / approved connection
@@ -122,4 +129,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 10 | Next: step 11 (React Native app skeleton + GPS permission) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 11 | Next: step 12 (feed screen) | Blockers: none (note: Overpass is slow/flaky)
