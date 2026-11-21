@@ -87,11 +87,16 @@ no scraping of individuals, no automated social actions.
       coordinates never echoed back. NOTE: users table gained columns. If an
       old dev nearbyconnect.db exists, delete it (no migrations yet).
 
-- [ ] 9. Nearby opted-in users
+- [x] 9. Nearby opted-in users
       Do: given a user, find other opted-in users within radius + overlapping
           interests
       Check: two test users with shared interest + close coordinates match;
           a far-away or no-overlap user does not
+      Done 2026-11-21: 12 tests in tests/test_people.py pass. GET
+      /me/nearby-users?radius_m= (default 2000, max 5000). You must be
+      sharing (fresh) to see others (409 otherwise). Returns name, shared
+      interests, distance rounded UP to 100 m, never coordinates. Sorted by
+      #shared interests, then distance. Stale/non-sharing users excluded.
 
 - [ ] 10. One-tap connect request (not auto-connect)
       Do: POST /connect-request creates a pending request; recipient must
@@ -112,4 +117,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 8 | Next: step 9 (nearby opted-in users) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 9 | Next: step 10 (connect requests) | Blockers: none (note: Overpass is slow/flaky)

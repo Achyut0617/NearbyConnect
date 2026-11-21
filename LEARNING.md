@@ -42,6 +42,10 @@
 | Data minimisation | Keep only the data you truly need, for as short as possible | only last location, stale after 2 h |
 | model_validator | A Pydantic check that looks at several fields together | lat+lon required only when consent=true |
 | Nullable column | A database column allowed to be empty (NULL / None) | last_lat is None when not sharing |
+| Reciprocity | Rule that you only get something if you give the same | must share location to see others |
+| Rounding for privacy | Making a number less exact so it can't pinpoint someone | 330 m shown as "400 m" |
+| Set intersection | Items that are in both lists | shared interests between two users |
+| HTTP 409 | "Conflict": the request clashes with the current state | asking for nearby users while not sharing |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved
