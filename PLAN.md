@@ -21,11 +21,14 @@ no scraping of individuals, no automated social actions.
       curl confirmed 200 for valid input, 422 for lat=200. radius_m defaults
       to 1000, max 5000. Coordinates are not logged.
 
-- [ ] 3. Place data fetch (Overpass/OSM)
+- [x] 3. Place data fetch (Overpass/OSM)
       Files: src/backend/services/osm_client.py
       Do: given lat/lon/radius, call Overpass API, return raw list of nearby
           places (name, type, coordinates)
       Check: unit test with a known lat/lon (e.g. a landmark) returns >0 places
+      Done 2026-11-21: 10 offline tests pass (fake server). Live test
+      (`pytest -m network`) passed on retry (46 s). Public Overpass servers
+      are slow/flaky (504/502/timeouts seen), so the client tries 3 servers.
 
 - [ ] 4. Data cleaning + validation
       Files: src/backend/services/clean.py
@@ -82,4 +85,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 2 | Next: step 3 (place data fetch from Overpass/OSM) | Blockers: none
+Last done: step 3 | Next: step 4 (data cleaning + validation) | Blockers: none (note: Overpass is slow/flaky)
