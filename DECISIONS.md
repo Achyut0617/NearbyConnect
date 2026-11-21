@@ -27,3 +27,26 @@
   has built-in request validation (useful for a beginner avoiding bad input)
 - Downside: less familiar than Django's "batteries included" style, but
   simpler for a small API-only backend
+
+## 2026-11-21 — SQLAlchemy with SQLite by default, PostgreSQL via DATABASE_URL
+- Options: PostgreSQL only, SQLite only, SQLAlchemy supporting both
+- Chose: SQLAlchemy; SQLite file by default, set DATABASE_URL for PostgreSQL
+- Why: tests and first runs need zero setup (no DB password), while the
+  same code runs on PostgreSQL later. pgvector/embeddings are still deferred
+  (scoring uses keyword overlap first, per PLAN step 6).
+- Downside: no migrations tool yet. If a table changes, delete
+  nearbyconnect.db (dev only) or add Alembic before real data exists.
+
+## 2026-11-21 — Simple bearer-token login
+- Options: no auth, simple random token, full OAuth / email+password
+- Chose: random token issued at sign-up; only its SHA-256 hash is stored
+- Why: Phase 2 shares location-derived info and connect requests, so
+  "anyone can act as anyone" is not acceptable even in v1. Full auth is
+  more than a beginner v1 needs.
+- Downside: lose the token = lose the account (no recovery yet).
+
+## 2026-11-21 — Keep OSM/Overpass; backup providers noted
+- Public Overpass servers were overloaded during development.
+- If that persists: add Geoapify (same OSM data, reliable servers, free key)
+  or Foursquare Places (better networking-style categories, free tier).
+  Both can return the same {name, type, lat, lon} shape as osm_client.

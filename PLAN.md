@@ -41,10 +41,15 @@ no scraping of individuals, no automated social actions.
       maps tags to 11 categories (food, cafe, coworking, education,
       event_space, culture, outdoors, fitness, shopping, office, other).
 
-- [ ] 5. User interest profile (minimal)
+- [x] 5. User interest profile (minimal)
       Files: src/backend/models/user.py, src/backend/routers/profile.py
       Do: user can POST a list of interest tags (e.g. ["AI", "startups"])
       Check: POST then GET returns the same tags
+      Done 2026-11-21: 10 tests in tests/test_profile.py pass. POST /users
+      (sign-up, returns a token once), GET /me, PUT + GET /me/interests
+      (PUT = replace the list). Tags trimmed/lowercased/deduped, max 20.
+      Added simple token login (only a SHA-256 hash is stored) and a DB layer
+      (SQLAlchemy; SQLite by default, PostgreSQL via DATABASE_URL).
 
 - [ ] 6. Relevance scoring
       Files: src/backend/services/scoring.py
@@ -89,4 +94,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 4 | Next: step 5 (user interest profile) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 5 | Next: step 6 (relevance scoring) | Blockers: none (note: Overpass is slow/flaky)

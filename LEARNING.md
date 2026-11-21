@@ -22,6 +22,15 @@
 | De-duplication | Removing repeated copies of the same thing | Same cafe mapped as point + building |
 | Haversine formula | Maths for the distance between two GPS points on a round Earth | distance_m() in clean.py |
 | Normalising / categorising | Turning many detailed labels into a few simple groups | amenity=cafe and shop=coffee both become "cafe" |
+| Database (DB) | A program that stores data safely so it's still there after a restart | users table with interests |
+| SQLAlchemy | Python library to talk to databases; same code works for SQLite and PostgreSQL | db.py, models/user.py |
+| SQLite | A tiny database kept in one file, no server needed | nearbyconnect.db during development |
+| Model / table | A Python class that maps to a database table; each object is one row | `User` class -> users table |
+| Token (login) | A long random secret the app sends to prove who it is | `Authorization: Bearer <token>` |
+| Hash | A one-way scramble of text; you can check a match but can't reverse it | we store sha256(token), not the token |
+| HTTP 401 | "Unauthorized": no token or a wrong token | GET /me without a token |
+| PUT vs POST | POST usually creates something new; PUT replaces something that exists | POST /users creates; PUT /me/interests replaces |
+| Fixture (pytest) | Reusable setup a test asks for by name | `client`, `make_user`, fresh DB in conftest.py |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved
