@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from db import create_tables
-from routers import location, people, profile, sharing
+from routers import connect, location, people, profile, sharing
 
 
 @asynccontextmanager
@@ -17,6 +17,7 @@ app.include_router(location.router)
 app.include_router(profile.router)
 app.include_router(sharing.router)
 app.include_router(people.router)
+app.include_router(connect.router)
 
 
 @app.get("/health")

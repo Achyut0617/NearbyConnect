@@ -98,10 +98,15 @@ no scraping of individuals, no automated social actions.
       interests, distance rounded UP to 100 m, never coordinates. Sorted by
       #shared interests, then distance. Stale/non-sharing users excluded.
 
-- [ ] 10. One-tap connect request (not auto-connect)
+- [x] 10. One-tap connect request (not auto-connect)
       Do: POST /connect-request creates a pending request; recipient must
           approve
       Check: request appears as "pending" until the other user approves it
+      Done 2026-11-21: 12 tests in tests/test_connect.py pass (99 total).
+      POST /connect-requests, GET /connect-requests (incoming/outgoing),
+      POST /connect-requests/{id}/accept|decline (recipient only),
+      GET /connections. No self/duplicate requests; no re-request after a
+      decline. Full 2-user flow verified on a real server; 0 coords in log.
 
 ## Phase 3 — Mobile app (after backend phases 1-2 are working and tested)
 
@@ -117,4 +122,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 9 | Next: step 10 (connect requests) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 10 | Next: step 11 (React Native app skeleton + GPS permission) | Blockers: none (note: Overpass is slow/flaky)

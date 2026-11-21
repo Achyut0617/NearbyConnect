@@ -46,6 +46,10 @@
 | Rounding for privacy | Making a number less exact so it can't pinpoint someone | 330 m shown as "400 m" |
 | Set intersection | Items that are in both lists | shared interests between two users |
 | HTTP 409 | "Conflict": the request clashes with the current state | asking for nearby users while not sharing |
+| Foreign key | A column pointing to a row in another table | connect_requests.from_user_id -> users.id |
+| State machine | Something that moves between fixed states by fixed rules | pending -> accepted / declined, never back |
+| HTTP 403 vs 404 | 403 = "you're not allowed"; 404 = "not found" (also used so strangers can't tell a thing exists) | sender accepting own request = 403; outsider = 404 |
+| Hook | An empty function called at a key moment so features can plug in later | on_request_accepted() for push notifications |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved
