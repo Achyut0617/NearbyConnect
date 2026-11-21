@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from db import create_tables
-from routers import location, profile
+from routers import location, profile, sharing
 
 
 @asynccontextmanager
@@ -15,6 +15,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="NearbyConnect API", lifespan=lifespan)
 app.include_router(location.router)
 app.include_router(profile.router)
+app.include_router(sharing.router)
 
 
 @app.get("/health")

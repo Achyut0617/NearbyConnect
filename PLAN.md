@@ -78,9 +78,14 @@ no scraping of individuals, no automated social actions.
 
 ## Phase 2 — Opted-in people matching (NearbyConnect users only)
 
-- [ ] 8. User location opt-in + storage
+- [x] 8. User location opt-in + storage
       Do: user can share last known location (with explicit consent toggle)
       Check: location only stored when consent = true; test the false case too
+      Done 2026-11-21: 11 tests in tests/test_sharing.py pass. PUT/GET/DELETE
+      /me/location (routers/sharing.py). consent=false erases and ignores
+      sent coords; only the last location is kept; >2 h old = stale;
+      coordinates never echoed back. NOTE: users table gained columns. If an
+      old dev nearbyconnect.db exists, delete it (no migrations yet).
 
 - [ ] 9. Nearby opted-in users
       Do: given a user, find other opted-in users within radius + overlapping
@@ -107,4 +112,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 7 | Next: step 8 (location opt-in + storage) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 8 | Next: step 9 (nearby opted-in users) | Blockers: none (note: Overpass is slow/flaky)

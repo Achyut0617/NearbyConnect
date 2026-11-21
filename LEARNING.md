@@ -38,6 +38,10 @@
 | HTTP 503 | "Service unavailable": try again later | /nearby when every Overpass server is busy |
 | Dependency override | In tests, swap a real piece (like the internet fetch) for a fake | app.dependency_overrides[get_place_fetcher] |
 | Tuning | Adjusting rules after looking at real results | schools -> "other" after seeing them rank high |
+| Consent / opt-in | The user must actively say "yes" before we use their data | consent=true needed to store location |
+| Data minimisation | Keep only the data you truly need, for as short as possible | only last location, stale after 2 h |
+| model_validator | A Pydantic check that looks at several fields together | lat+lon required only when consent=true |
+| Nullable column | A database column allowed to be empty (NULL / None) | last_lat is None when not sharing |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

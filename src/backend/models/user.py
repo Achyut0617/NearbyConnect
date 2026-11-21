@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, DateTime, Integer, String
+from sqlalchemy import JSON, Boolean, DateTime, Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from db import Base
@@ -8,6 +8,13 @@ from db import Base
 
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)
+
+
+def as_utc(dt: datetime | None) -> datetime | None:
+    """SQLite gives back datetimes without a timezone; treat them as UTC."""
+    if dt is None:
+        return None
+    return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
 
 
 class User(Base):
@@ -22,3 +29,17 @@ class User(Base):
     # e.g. ["ai", "startups"]
     interests: Mapped[list] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    # --- Location sharing (Step 8) ---
+    # Only the LAST location is kept (no history), and only while sharing is on.
+    share_location: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    last_lon: Mapped[float | None] = mapped_column(Float, nullable=True)
+    location_updated_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True)
+
+    def clear_location(self) -> None:
+        self.share_location = False
+        self.last_lat = None
+        self.last_lon = None
+        self.location_updated_at = None
