@@ -13,10 +13,13 @@ no scraping of individuals, no automated social actions.
       Check: `uvicorn main:app --reload` runs, curl localhost:8000/health returns {"status":"ok"}
       Done 2026-11-21: tested with curl, got {"status":"ok"}
 
-- [ ] 2. Location input endpoint
+- [x] 2. Location input endpoint
       Files: src/backend/routers/location.py
       Do: POST /nearby accepting {lat, lon, radius_m}; validate ranges
       Check: invalid lat/lon (e.g. lat=200) returns 422, valid input returns 200
+      Done 2026-11-21: 8 pytest tests pass (src/backend/tests/test_location.py);
+      curl confirmed 200 for valid input, 422 for lat=200. radius_m defaults
+      to 1000, max 5000. Coordinates are not logged.
 
 - [ ] 3. Place data fetch (Overpass/OSM)
       Files: src/backend/services/osm_client.py
@@ -79,4 +82,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 1 | Next: step 2 (location input endpoint) | Blockers: none
+Last done: step 2 | Next: step 3 (place data fetch from Overpass/OSM) | Blockers: none

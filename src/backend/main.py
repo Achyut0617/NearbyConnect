@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
+from routers import location
+
 app = FastAPI(title="NearbyConnect API")
+app.include_router(location.router)
 
 
 @app.get("/health")

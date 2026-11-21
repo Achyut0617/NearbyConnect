@@ -9,7 +9,7 @@ who have opted into the app and explicitly tap "Connect" — no scraping of
 individuals, no automated follow/connect on any third-party platform.
 
 ## Tech stack
-- Backend: Python 3.11, FastAPI
+- Backend: Python 3.12, FastAPI
 - DB: PostgreSQL + pgvector (for interest/embedding matching)
 - Mobile: React Native (Expo)
 - Data sources (v1, free tier): OpenStreetMap/Nominatim + Overpass API for
