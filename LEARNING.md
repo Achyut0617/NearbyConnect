@@ -72,6 +72,15 @@
 | Expo push token | The phone's "address" for notifications | ExponentPushToken[...] |
 | Background task | Work done AFTER the reply is sent, so the user doesn't wait | sending the push in FastAPI |
 | monkeypatch | pytest tool to temporarily replace a function in a test | fake send_to_expo in conftest.py |
+| Web scraping | Reading data from web pages/APIs automatically | place_intel, reddit, youtube clients |
+| Aggregate / k-anonymity | Only report a group stat if >= k people share it | topic shown only if >= 20 authors |
+| Feature extraction | Turning raw text into numbers a model can use | features.py |
+| Naive Bayes | Combine independent clues into a probability | estimate.py v1 formula |
+| Logistic regression | A trained model that predicts class probabilities | model.py v2 (scikit-learn) |
+| Calibration (ECE) | Are the confidence numbers honest? | measured in train_profiling.py |
+| Synthetic data | Fake data with known answers, to measure accuracy safely | synthetic.py |
+| Docker | Pack the app so it runs the same anywhere | Dockerfile, docker-compose.yml |
+| CI (GitHub Actions) | Auto-run tests on every push | .github/workflows/ci.yml |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

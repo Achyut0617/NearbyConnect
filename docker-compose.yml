@@ -1,0 +1,37 @@
+# One-command local run of the full backend with PostgreSQL.
+#   docker compose up --build
+# The API is then at http://localhost:8000 (health: /health, docs: /docs).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nearby
+      POSTGRES_PASSWORD: nearby
+      POSTGRES_DB: nearbyconnect
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nearby"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./src/backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://nearby:nearby@db:5432/nearbyconnect
+      CORS_ORIGINS: "*"
+      # Optional Stage B keys — set them in a .env file next to this one:
+      REDDIT_CLIENT_ID: ${REDDIT_CLIENT_ID:-}
+      REDDIT_CLIENT_SECRET: ${REDDIT_CLIENT_SECRET:-}
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:

@@ -207,33 +207,42 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
       App "Area" tab: TODO after Stage C. 25 new tests (143 total).
 
 ### Stage C — Author profiling model (occupation), consent/benchmark data ONLY
-- [ ] 20. Feature extraction from posts (text/hashtags/timing/topics)
+- [x] 20. Feature extraction from posts (text/hashtags/timing/topics)
       Files: src/backend/services/profiling/features.py
       Do: turn a set of posts into features (topic mix, active hours, vocab,
           hashtag categories). Input is a dataset row or a consented user's own
           posts — never a scraped stranger.
       Check: unit test on sample post sets -> feature vector.
-- [ ] 21. Occupation estimator v1 (explainable formula) + evaluation
+- [x] 21. Occupation estimator v1 (explainable formula) + evaluation
       Files: src/backend/services/profiling/estimate.py
       Do: Bayes-style scoring over classes (student/teacher/researcher/
           industry/other) with per-class probabilities AND a plain "because..."
           explanation. Evaluate on a licensed public benchmark; report accuracy
           + calibration.
       Check: evaluation script prints real metrics; probabilities sum ~1.
-- [ ] 22. Occupation estimator v2 (trained model) + compare
+- [x] 22. Occupation estimator v2 (trained model) + compare
       Files: src/backend/services/profiling/model.py
       Do: logistic-regression (or similar) version; compare vs v1 on the same
           benchmark. Document which wins and why.
       Check: metrics table v1 vs v2 reproducible from a script.
-- [ ] 23. Synthetic noisy-profile generator (for entity-resolution testing)
+- [x] 23. Synthetic noisy-profile generator (for entity-resolution testing)
       Files: src/backend/services/profiling/synthetic.py
       Do: generate N fake profiles with typos/dupes/nicknames/missing fields
           AND known ground-truth labels, for measuring accuracy safely.
       Check: generator is seedable/reproducible; ground truth is recoverable.
-- [ ] 24. Opt-in "analyse my own account" in the app
+- [x] 24. Opt-in "analyse my own account" in the app
       Do: a user links THEIR account, consents, gets their own estimated
           interests/occupation + "why". Same model, with consent. Never others.
       Check: nothing runs without an explicit consent flag; test the false case.
+      Done 2026-11-21: Stage C built. services/profiling/{types,synthetic,
+      features,estimate,model}.py; scripts/train_profiling.py (v1 ~0.85 vs
+      v2 ~0.98 accuracy on held-out synthetic, well-calibrated);
+      routers/profiling.py POST /me/analyze (consent required, nothing stored).
+      scikit-learn added. Deploy: Dockerfile + docker-compose.yml; CI at
+      .github/workflows/ci.yml (pytest + tsc + docker build). Docs: README.md,
+      docs/API_KEYS.md, docs/PROFILING.md. 36 new tests (160 total). Docker
+      build NOT verified locally (Docker Desktop was off); CI covers it.
+      App UI for Phase 4 (Area tab, self-analyze screen) still TODO.
 
 ## Explicitly deferred / out of scope for now
 - Scraping individual people's social profiles — not building this, ever.
@@ -242,10 +251,14 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 14 (Phases 1-3 done). Phase 4 (steps 15-24) designed & agreed,
-not started. | Next: step 15 (place lookup) when you say go; still want to test
-the app on a real phone too. | Phase 4 scope: Maharashtra first. Aggregate-only
-area trends (Reddit+YouTube), occupation model on consent/benchmark data only,
-NO profiling of specific strangers (see Phase 4 privacy boundary above).
-Known limits: Overpass slow (30-60 s) / sometimes 503; push needs a dev build;
-no DB migrations; lost token = lost account | Blockers: none
+Last done: step 24. Phases 1-4 BACKEND code complete (160 tests pass).
+Next: (a) add Phase 4 app UI (Area tab calling /area-trends, self-analyze
+screen calling /me/analyze); (b) you add Reddit+YouTube keys (docs/API_KEYS.md)
+to try live trends; (c) test the app on a real phone.
+Phase 4 scope: Maharashtra first. Aggregate-only area trends (k-author >= 20),
+occupation model on consent/benchmark/synthetic data only, NO profiling of
+specific strangers (see Phase 4 privacy boundary above).
+Deploy: Docker + docker-compose; CI in .github/workflows/ci.yml.
+Known limits: Overpass slow / sometimes 503; push needs a dev build; profiling
+accuracy numbers are on synthetic data (upper bound); no DB migrations;
+Docker build unverified locally (CI builds it) | Blockers: none
