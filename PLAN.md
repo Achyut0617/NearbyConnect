@@ -124,7 +124,13 @@ no scraping of individuals, no automated social actions.
       distance, "Why this?" reasons, Open in Maps; pull-to-refresh; reloads
       when interests change; clear 503 / offline messages; ignores stale
       responses. Checks: tsc clean, Android bundle builds. Not run on a phone yet.
-- [ ] 13. Connect request UI (send/approve)
+- [x] 13. Connect request UI (send/approve)
+      Done 2026-11-21: People tab = sharing switch (off by default, confirm
+      dialog says exactly what's shown), nearby matches with Connect button,
+      location refreshed on open while sharing. Requests tab = incoming
+      (Accept/Decline), outgoing (waiting), connections. Checks: tsc clean,
+      Android bundle builds; app's api.ts ran the full 2-user flow against
+      the real backend (all calls + 409/401 errors OK). Not run on a phone yet.
 - [ ] 14. Push notification on new match / approved connection
 
 ## Explicitly deferred / out of scope for now
@@ -134,4 +140,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 12 | Next: step 13 (connect request UI) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 13 | Next: step 14 (push notifications) | Blockers: none (note: Overpass is slow/flaky)

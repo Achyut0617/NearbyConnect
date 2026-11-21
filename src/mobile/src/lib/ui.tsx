@@ -86,6 +86,33 @@ export function Title({ children }: { children: ReactNode }) {
   return <Text style={styles.title}>{children}</Text>;
 }
 
+/** Row of tappable radius options, e.g. 500 m / 1 km / 2 km. */
+export function RadiusPicker({
+  options,
+  value,
+  onChange,
+}: {
+  options: number[];
+  value: number;
+  onChange: (r: number) => void;
+}) {
+  return (
+    <View style={styles.radiusRow}>
+      {options.map((r) => (
+        <Pressable
+          key={r}
+          accessibilityRole="button"
+          accessibilityState={{ selected: r === value }}
+          onPress={() => onChange(r)}
+          style={[styles.radiusChip, r === value && styles.radiusChipOn]}
+        >
+          <Text style={[styles.radiusText, r === value && styles.radiusTextOn]}>{formatDistance(r)}</Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
 /** "340" -> "340 m", "1500" -> "1.5 km" */
 export function formatDistance(m: number | null | undefined): string {
   if (m === null || m === undefined) return '';
@@ -131,4 +158,17 @@ const styles = StyleSheet.create({
   error: { color: colors.danger, fontSize: 14 },
   muted: { color: colors.muted, fontSize: 14, lineHeight: 20 },
   title: { color: colors.text, fontSize: 22, fontWeight: '700' },
+  radiusRow: { flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' },
+  radiusChip: {
+    minHeight: 40,
+    paddingHorizontal: space.lg,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.card,
+    justifyContent: 'center',
+  },
+  radiusChipOn: { backgroundColor: colors.primary, borderColor: colors.primary },
+  radiusText: { color: colors.text, fontWeight: '500' },
+  radiusTextOn: { color: colors.primaryText },
 });

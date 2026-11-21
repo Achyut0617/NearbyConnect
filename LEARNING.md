@@ -64,6 +64,10 @@
 | useEffect | Run code when a screen opens or when certain values change | reload places when radius changes |
 | Pull-to-refresh | Drag the list down to reload | RefreshControl in the Feed |
 | Stale response | An older, slower request answering after a newer one | requestId ref ignores old answers |
+| useFocusEffect | Run code every time a tab comes back on screen | reload requests when opening the tab |
+| Switch | On/off toggle control | "Share my location" |
+| Confirmation dialog | Ask "are you sure?" before something important | before turning on location sharing |
+| Integration check | Testing two real parts together, not with fakes | app's api.ts against the running backend |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

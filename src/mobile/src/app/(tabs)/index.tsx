@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   FlatList,
   Linking,
-  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -15,7 +14,7 @@ import { api, ApiError, Place } from '../../lib/api';
 import { getCurrentCoords, getPermission, PermissionState, requestPermission } from '../../lib/location';
 import { useSession } from '../../lib/session';
 import { colors, space } from '../../lib/theme';
-import { Button, Card, Chip, Muted, formatDistance } from '../../lib/ui';
+import { Button, Card, Chip, Muted, RadiusPicker, formatDistance } from '../../lib/ui';
 
 const RADII = [500, 1000, 2000, 5000];
 
@@ -110,21 +109,7 @@ export default function FeedScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       ListHeaderComponent={
         <View style={{ gap: space.md }}>
-          <View style={styles.radiusRow}>
-            {RADII.map((r) => (
-              <Pressable
-                key={r}
-                accessibilityRole="button"
-                accessibilityState={{ selected: r === radius }}
-                onPress={() => setRadius(r)}
-                style={[styles.radiusChip, r === radius && styles.radiusChipOn]}
-              >
-                <Text style={[styles.radiusText, r === radius && styles.radiusTextOn]}>
-                  {formatDistance(r)}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+          <RadiusPicker options={RADII} value={radius} onChange={setRadius} />
           {status === 'done' && interestsUsed.length === 0 && (
             <Muted>Tip: add interests in the Profile tab to get better suggestions.</Muted>
           )}
@@ -179,19 +164,6 @@ const styles = StyleSheet.create({
   page: { padding: space.lg },
   list: { padding: space.lg, gap: space.md },
   cardTitle: { fontSize: 16, fontWeight: '600', color: colors.text },
-  radiusRow: { flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' },
-  radiusChip: {
-    minHeight: 40,
-    paddingHorizontal: space.lg,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-    justifyContent: 'center',
-  },
-  radiusChipOn: { backgroundColor: colors.primary, borderColor: colors.primary },
-  radiusText: { color: colors.text, fontWeight: '500' },
-  radiusTextOn: { color: colors.primaryText },
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', gap: space.md },
   placeName: { flex: 1, fontSize: 17, fontWeight: '600', color: colors.text },
   distance: { color: colors.muted, fontSize: 14 },
