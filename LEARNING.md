@@ -31,6 +31,9 @@
 | HTTP 401 | "Unauthorized": no token or a wrong token | GET /me without a token |
 | PUT vs POST | POST usually creates something new; PUT replaces something that exists | POST /users creates; PUT /me/interests replaces |
 | Fixture (pytest) | Reusable setup a test asks for by name | `client`, `make_user`, fresh DB in conftest.py |
+| Relevance score | A number saying how well something matches what the user wants | coworking space = 3 points for "startups" |
+| Regex word boundary (\b) | Regex rule meaning "start/end of a whole word" | "ai" matches "AI Lab" but not "Sai" |
+| Sort key | The value(s) Python sorts by; a tuple sorts by the first, then the second... | (-score, distance) = best score, then nearest |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

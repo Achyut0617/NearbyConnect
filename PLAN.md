@@ -51,12 +51,16 @@ no scraping of individuals, no automated social actions.
       Added simple token login (only a SHA-256 hash is stored) and a DB layer
       (SQLAlchemy; SQLite by default, PostgreSQL via DATABASE_URL).
 
-- [ ] 6. Relevance scoring
+- [x] 6. Relevance scoring
       Files: src/backend/services/scoring.py
       Do: simple keyword/tag overlap score between user interests and place
           category/name first (defer embeddings until this works)
       Check: unit test — a "coworking" place scores higher for a user
           interested in "startups" than a "restaurant" does
+      Done 2026-11-21: 11 tests in tests/test_scoring.py pass. ~60 known
+      interests map to category points; +2 if an interest is a whole word in
+      the name/OSM type. Each score has human-readable reasons. rank_places()
+      sorts by score, then distance.
 
 - [ ] 7. Combine into /nearby response
       Files: src/backend/routers/location.py (update)
@@ -94,4 +98,4 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 5 | Next: step 6 (relevance scoring) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 6 | Next: step 7 (combine into /nearby) | Blockers: none (note: Overpass is slow/flaky)
