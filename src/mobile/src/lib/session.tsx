@@ -2,6 +2,7 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 
 import { api, ApiError, Me } from './api';
+import { disablePush } from './push';
 import { clearToken, loadToken, saveToken } from './storage';
 
 type SessionValue = {
@@ -52,10 +53,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [loadMe]);
 
   const signOut = useCallback(async () => {
+    if (token) await disablePush(token); // stop notifications to this phone
     await clearToken();
     setToken(null);
     setMe(null);
-  }, []);
+  }, [token]);
 
   const refreshMe = useCallback(async () => {
     if (token) await loadMe(token);

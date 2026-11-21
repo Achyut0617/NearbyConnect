@@ -38,6 +38,10 @@ class User(Base):
     location_updated_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True)
 
+    # --- Push notifications (Step 14) ---
+    # Expo push token like "ExponentPushToken[xxxx]". Only set if the user allowed notifications.
+    push_token: Mapped[str | None] = mapped_column(String(200), nullable=True)
+
     def clear_location(self) -> None:
         self.share_location = False
         self.last_lat = None

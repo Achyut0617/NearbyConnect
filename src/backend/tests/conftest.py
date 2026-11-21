@@ -42,3 +42,16 @@ def make_user(client):
             assert r.status_code == 200
         return data["id"], headers
     return _make
+
+
+@pytest.fixture(autouse=True)
+def sent_pushes(monkeypatch):
+    """Never call the real Expo push service in tests; record messages instead."""
+    sent = []
+
+    def fake_send(message):
+        sent.append(message)
+        return {"data": {"status": "ok", "id": "fake-ticket"}}
+
+    monkeypatch.setattr("services.push.send_to_expo", fake_send)
+    return sent

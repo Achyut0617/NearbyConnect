@@ -30,6 +30,10 @@
         {
           "locationWhenInUsePermission": "NearbyConnect uses your location while the app is open to show places near you. It is only shared with other users if you turn on sharing."
         }
+      ],
+      [
+        "expo-notifications",
+        {}
       ]
     ],
     "scheme": "nearbyconnect"

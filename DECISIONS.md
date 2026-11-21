@@ -45,6 +45,15 @@
   more than a beginner v1 needs.
 - Downside: lose the token = lose the account (no recovery yet).
 
+## 2026-11-21 — No "new match nearby" push notifications
+- Options: background location + push on match; server scans for new
+  matches whenever anyone updates location; no match pushes
+- Chose: no match pushes. Push only for connect request / accepted
+- Why: background tracking breaks the "only while the app is open"
+  promise; server-side scanning would tell people when someone with
+  their interests is near, a presence leak, and is spammy
+- Revisit only with an explicit, separate opt-in and rate limits
+
 ## 2026-11-21 — Keep OSM/Overpass; backup providers noted
 - Public Overpass servers were overloaded during development.
 - If that persists: add Geoapify (same OSM data, reliable servers, free key)

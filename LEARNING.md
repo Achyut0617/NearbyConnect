@@ -68,6 +68,10 @@
 | Switch | On/off toggle control | "Share my location" |
 | Confirmation dialog | Ask "are you sure?" before something important | before turning on location sharing |
 | Integration check | Testing two real parts together, not with fakes | app's api.ts against the running backend |
+| Push notification | A message the server sends to a phone even when the app is closed | "Asha wants to connect" |
+| Expo push token | The phone's "address" for notifications | ExponentPushToken[...] |
+| Background task | Work done AFTER the reply is sent, so the user doesn't wait | sending the push in FastAPI |
+| monkeypatch | pytest tool to temporarily replace a function in a test | fake send_to_expo in conftest.py |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

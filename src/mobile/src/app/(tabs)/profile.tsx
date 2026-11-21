@@ -5,6 +5,7 @@ import { Alert, Linking, Platform, ScrollView, StyleSheet, Text, View } from 're
 
 import { api, API_URL, ApiError, parseInterests } from '../../lib/api';
 import { getPermission, PermissionState, requestPermission } from '../../lib/location';
+import { enablePush, PushResult, pushResultMessage } from '../../lib/push';
 import { useSession } from '../../lib/session';
 import { colors, space } from '../../lib/theme';
 import { Button, Card, Chip, ErrorText, Field, Muted } from '../../lib/ui';
@@ -16,6 +17,9 @@ export default function ProfileScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [permission, setPermission] = useState<PermissionState | null>(null);
+  const [pushResult, setPushResult] = useState<PushResult | null>(null);
+  const [pushMessage, setPushMessage] = useState<string | null>(null);
+  const [pushBusy, setPushBusy] = useState(false);
 
   // Re-check permission every time this tab is opened (user may have changed Settings).
   useFocusEffect(
@@ -37,6 +41,15 @@ export default function ProfileScreen() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function turnOnPush() {
+    if (!token) return;
+    setPushBusy(true);
+    const result = await enablePush(token, true);
+    setPushResult(result);
+    setPushMessage(pushResultMessage(result));
+    setPushBusy(false);
   }
 
   async function askPermission() {
@@ -105,6 +118,14 @@ export default function ProfileScreen() {
               : 'Not decided yet.'}
         </Muted>
         {permission !== 'granted' && <Button title="Allow location" kind="secondary" onPress={askPermission} />}
+      </Card>
+
+      <Card>
+        <Text style={styles.cardTitle}>Notifications</Text>
+        <Muted>{pushMessage ?? 'Get told when someone wants to connect or accepts your request.'}</Muted>
+        {pushResult !== 'enabled' && (
+          <Button title="Turn on notifications" kind="secondary" onPress={turnOnPush} loading={pushBusy} />
+        )}
       </Card>
 
       <Card>

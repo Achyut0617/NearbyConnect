@@ -131,7 +131,21 @@ no scraping of individuals, no automated social actions.
       (Accept/Decline), outgoing (waiting), connections. Checks: tsc clean,
       Android bundle builds; app's api.ts ran the full 2-user flow against
       the real backend (all calls + 409/401 errors OK). Not run on a phone yet.
-- [ ] 14. Push notification on new match / approved connection
+- [x] 14. Push notification on new match / approved connection
+      Done 2026-11-21: backend stores Expo push token (PUT/DELETE
+      /me/push-token), sends via Expo Push API as a background task on
+      new request (to recipient) and accept (to sender); no push on decline;
+      dead tokens (DeviceNotRegistered) are forgotten; failures never break
+      the request. 13 new tests (113 total). Real Expo API answered a fake
+      token with the exact error shape we handle. App: Profile "Turn on
+      notifications", silent refresh if already allowed, tap opens Requests,
+      token removed on sign out. tsc, Android + web bundles, expo-doctor 20/20.
+      DECIDED NOT TO BUILD "new match" pushes: needs background location or
+      server-side presence scanning, which breaks our privacy promises.
+      To test on a phone you need a development build (NOT Expo Go):
+        cd src/mobile && npx expo install expo-dev-client
+        npx eas-cli@latest init        (adds extra.eas.projectId to app.json)
+        npx eas-cli@latest build --profile development --platform android
 
 ## Explicitly deferred / out of scope for now
 - Scraping individual people's social profiles — not building this, ever.
@@ -140,4 +154,7 @@ no scraping of individuals, no automated social actions.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 13 | Next: step 14 (push notifications) | Blockers: none (note: Overpass is slow/flaky)
+Last done: step 14 (ALL PLANNED STEPS DONE) | Next: you test on a real phone
+and give feedback | Known limits: Overpass slow (30-60 s) / sometimes 503; push
+needs a development build; no DB migrations (delete dev nearbyconnect.db if
+tables change); lost token = lost account | Blockers: none (note: Overpass is slow/flaky)

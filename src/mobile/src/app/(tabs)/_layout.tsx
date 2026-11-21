@@ -1,12 +1,20 @@
 // Bottom tabs. If nobody is logged in yet, send them to onboarding first.
 import { Redirect, Tabs } from 'expo-router';
+import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
+import { enablePush } from '../../lib/push';
 import { useSession } from '../../lib/session';
 import { colors } from '../../lib/theme';
 
 export default function TabsLayout() {
   const { ready, token } = useSession();
+
+  // If notifications were already allowed, quietly refresh the push token.
+  // (No popup here: the user turns notifications on from the Profile tab.)
+  useEffect(() => {
+    if (token) void enablePush(token, false);
+  }, [token]);
 
   if (!ready) {
     return (

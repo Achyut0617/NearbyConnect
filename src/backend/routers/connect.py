@@ -5,7 +5,7 @@ a connection when the OTHER user taps "Accept". Nothing is automatic, and
 nothing touches any third-party platform.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
@@ -14,6 +14,7 @@ from auth import get_current_user
 from db import get_db
 from models.connect_request import ACCEPTED, DECLINED, PENDING, ConnectRequest
 from models.user import User, as_utc, utcnow
+from services.push import notify_user
 
 router = APIRouter()
 
@@ -43,16 +44,29 @@ def _out(req: ConnectRequest) -> dict:
     }
 
 
-def on_request_created(db: Session, req: ConnectRequest) -> None:
-    """Hook called after a request is created (push notifications plug in here)."""
+def on_request_created(tasks: BackgroundTasks, req: ConnectRequest) -> None:
+    """Tell the recipient about the new request (sent after the response)."""
+    tasks.add_task(
+        notify_user, req.to_user_id,
+        "New connect request",
+        f"{req.from_user.display_name} wants to connect with you.",
+        {"screen": "requests"},
+    )
 
 
-def on_request_accepted(db: Session, req: ConnectRequest) -> None:
-    """Hook called after a request is accepted (push notifications plug in here)."""
+def on_request_accepted(tasks: BackgroundTasks, req: ConnectRequest) -> None:
+    """Tell the sender their request was accepted (sent after the response)."""
+    tasks.add_task(
+        notify_user, req.from_user_id,
+        "Request accepted",
+        f"{req.to_user.display_name} accepted your connect request.",
+        {"screen": "requests"},
+    )
 
 
 @router.post("/connect-requests", status_code=201)
-def send_request(body: ConnectBody, me: User = Depends(get_current_user),
+def send_request(body: ConnectBody, tasks: BackgroundTasks,
+                 me: User = Depends(get_current_user),
                  db: Session = Depends(get_db)):
     if body.to_user_id == me.id:
         raise HTTPException(400, "You can't connect with yourself.")
@@ -73,7 +87,7 @@ def send_request(body: ConnectBody, me: User = Depends(get_current_user),
     db.add(req)
     db.commit()
     db.refresh(req)
-    on_request_created(db, req)
+    on_request_created(tasks, req)
     return _out(req)
 
 
@@ -106,9 +120,10 @@ def _respond(request_id: int, new_status: str, me: User, db: Session) -> Connect
 
 
 @router.post("/connect-requests/{request_id}/accept")
-def accept(request_id: int, me: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def accept(request_id: int, tasks: BackgroundTasks,
+           me: User = Depends(get_current_user), db: Session = Depends(get_db)):
     req = _respond(request_id, ACCEPTED, me, db)
-    on_request_accepted(db, req)
+    on_request_accepted(tasks, req)
     return _out(req)
 
 

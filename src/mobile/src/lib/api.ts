@@ -151,6 +151,16 @@ export const api = {
     request<ConnectRequest>(`/connect-requests/${id}/decline`, { method: 'POST', token }),
 
   connections: (token: string) => request<{ connections: Connection[] }>('/connections', { token }),
+
+  setPushToken: (token: string, pushToken: string) =>
+    request<{ notifications: boolean }>('/me/push-token', {
+      method: 'PUT',
+      token,
+      body: { token: pushToken },
+    }),
+
+  clearPushToken: (token: string) =>
+    request<{ notifications: boolean }>('/me/push-token', { method: 'DELETE', token }),
 };
 
 /** "AI, startups,  coffee" -> ["AI", "startups", "coffee"] */
