@@ -7,5 +7,4 @@ node_modules/
 
 # Phase 4 ML artifacts and local env
 src/backend/services/profiling/artifacts/*.joblib
-.env
 src/backend/.env
