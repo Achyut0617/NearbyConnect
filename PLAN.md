@@ -204,7 +204,7 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
       /area-intel + /area-trends (login-gated). k-author threshold=20 enforced
       in trends.aggregate; tests prove single-author spam and <20-author topics
       are dropped and no author refs leak. Sources skip cleanly without keys.
-      App "Area" tab: TODO after Stage C. 25 new tests (143 total).
+      25 new tests (143 total). App "Area" tab added later (see step 24).
 
 ### Stage C — Author profiling model (occupation), consent/benchmark data ONLY
 - [x] 20. Feature extraction from posts (text/hashtags/timing/topics)
@@ -242,7 +242,10 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
       .github/workflows/ci.yml (pytest + tsc + docker build). Docs: README.md,
       docs/API_KEYS.md, docs/PROFILING.md. 36 new tests (160 total). Docker
       build NOT verified locally (Docker Desktop was off); CI covers it.
-      App UI for Phase 4 (Area tab, self-analyze screen) still TODO.
+      App UI for Phase 4 done 2026-11-21: Area tab (src/mobile/src/app/
+      (tabs)/area.tsx -> /area-trends) and consent-gated self-analysis screen
+      (src/mobile/src/app/analyze.tsx -> /me/analyze), opened from Profile.
+      Verified against a real server; tsc clean, Android bundle builds.
 
 ## Explicitly deferred / out of scope for now
 - Scraping individual people's social profiles — not building this, ever.
@@ -251,10 +254,11 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 24. Phases 1-4 BACKEND code complete (160 tests pass).
-Next: (a) add Phase 4 app UI (Area tab calling /area-trends, self-analyze
-screen calling /me/analyze); (b) you add Reddit+YouTube keys (docs/API_KEYS.md)
-to try live trends; (c) test the app on a real phone.
+Last done: step 24 + Phase 4 app UI. Phases 1-4 complete, backend AND app
+(160 backend tests pass; mobile `tsc --noEmit` clean, re-checked 2026-11-22).
+Next: (a) you add Reddit+YouTube keys (docs/API_KEYS.md) to try live trends;
+(b) test the app on a real phone (development build, see step 14);
+(c) plan Phase 5.
 Phase 4 scope: Maharashtra first. Aggregate-only area trends (k-author >= 20),
 occupation model on consent/benchmark/synthetic data only, NO profiling of
 specific strangers (see Phase 4 privacy boundary above).
