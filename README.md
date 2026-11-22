@@ -1,5 +1,7 @@
 # NearbyConnect
 
+[![CI](https://github.com/Achyut0617/nearbyconnect/actions/workflows/ci.yml/badge.svg)](https://github.com/Achyut0617/nearbyconnect/actions/workflows/ci.yml)
+
 Location-aware networking + an area-intelligence and author-profiling data
 pipeline. Built step by step; every step is tested.
 
@@ -37,7 +39,8 @@ pipeline. Built step by step; every step is tested.
 ### Backend (local, SQLite)
 ```bash
 cd src/backend
-pip install -r requirements.txt       # or use the committed venv
+python -m venv venv                   # optional: keep packages separate
+pip install -r requirements.txt
 uvicorn main:app --reload             # http://localhost:8000  (docs at /docs)
 pytest -q                             # run the test suite
 ```
