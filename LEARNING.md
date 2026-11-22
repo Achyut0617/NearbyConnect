@@ -81,6 +81,7 @@
 | Synthetic data | Fake data with known answers, to measure accuracy safely | synthetic.py |
 | Docker | Pack the app so it runs the same anywhere | Dockerfile, docker-compose.yml |
 | CI (GitHub Actions) | Auto-run tests on every push | .github/workflows/ci.yml |
+| Cache + TTL | Keep a recent answer for a short time (Time To Live) so repeats are instant | place_cache.py, 10 min |
 | Rate limiting | A platform capping how many requests you can make | Why we can't mass-scrape without getting blocked/banned |
 
 ## Problems I solved

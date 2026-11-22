@@ -5,7 +5,8 @@ from auth import get_optional_user
 from models.user import User
 from routers.profile import MAX_INTERESTS, normalize_interests
 from services.clean import clean_places
-from services.osm_client import OverpassUnavailable, fetch_places
+from services.osm_client import OverpassUnavailable
+from services.place_cache import cached_fetch_places
 from services.scoring import rank_places
 
 router = APIRouter()
@@ -35,8 +36,11 @@ class NearbyRequest(BaseModel):
 
 
 def get_place_fetcher():
-    """Which function fetches raw places. Tests replace this with a fake."""
-    return fetch_places
+    """Which function fetches raw places. Tests replace this with a fake.
+
+    Uses the short-lived cache (step 25), so repeat searches are instant.
+    """
+    return cached_fetch_places
 
 
 @router.post("/nearby")
@@ -63,6 +67,10 @@ def nearby(req: NearbyRequest,
         )
 
     ranked = rank_places(clean_places(raw), interests, req.lat, req.lon)
+    # The cache may search slightly wider than asked; keep only places inside
+    # the user's real radius.
+    ranked = [p for p in ranked
+              if p["distance_m"] is None or p["distance_m"] <= req.radius_m]
     return {
         "radius_m": req.radius_m,
         "interests_used": interests,

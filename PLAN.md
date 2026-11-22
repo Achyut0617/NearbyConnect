@@ -247,6 +247,22 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
       (src/mobile/src/app/analyze.tsx -> /me/analyze), opened from Profile.
       Verified against a real server; tsc clean, Android bundle builds.
 
+## Phase 5 — Make it fast and reliable for real use
+- [x] 25. Cache place lookups (short-lived, in memory)
+      Files: src/backend/services/place_cache.py, routers/location.py
+      Do: repeat /nearby searches from about the same spot reuse the last
+          Overpass result instead of waiting 30-60 s again.
+      Check: tests prove a repeat search makes no new Overpass call, entries
+          expire, failures are not cached, and results stay inside the radius.
+      Done 2026-11-22: point snapped to a ~110 m grid; fetch radius +100 m so
+      the user's full circle is covered, then /nearby drops places beyond the
+      real radius. 10-minute TTL, max 256 entries, memory only, nothing
+      logged, not tied to a user. 12 new tests (172 total).
+- [ ] 26. Backup places provider when Overpass is down (Geoapify free tier,
+      see DECISIONS.md) — same {name, type, lat, lon} shape.
+- [ ] 27. Database migrations (Alembic), so new columns don't need a DB reset.
+- [ ] 28. Deploy the backend online so the app works away from home Wi-Fi.
+
 ## Explicitly deferred / out of scope for now
 - Scraping individual people's social profiles — not building this, ever.
 - Automated follow/connect on LinkedIn/Instagram/X — ToS violation, skip.
@@ -254,15 +270,16 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 24 + Phase 4 app UI. Phases 1-4 complete, backend AND app
-(160 backend tests pass; mobile `tsc --noEmit` clean, re-checked 2026-11-22).
+Last done: step 25 (place cache). Phases 1-4 complete, backend AND app
+(172 backend tests pass; mobile `tsc --noEmit` clean, re-checked 2026-11-22).
 Next: (a) you add Reddit+YouTube keys (docs/API_KEYS.md) to try live trends;
 (b) test the app on a real phone (development build, see step 14);
-(c) plan Phase 5.
+(c) Phase 5 step 26 (backup places provider).
 Phase 4 scope: Maharashtra first. Aggregate-only area trends (k-author >= 20),
 occupation model on consent/benchmark/synthetic data only, NO profiling of
 specific strangers (see Phase 4 privacy boundary above).
 Deploy: Docker + docker-compose; CI in .github/workflows/ci.yml.
-Known limits: Overpass slow / sometimes 503; push needs a dev build; profiling
+Known limits: first Overpass lookup per spot still slow / sometimes 503
+(repeats are cached for 10 min); push needs a dev build; profiling
 accuracy numbers are on synthetic data (upper bound); no DB migrations;
 Docker build unverified locally (CI builds it) | Blockers: none

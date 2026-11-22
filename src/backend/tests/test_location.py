@@ -125,3 +125,17 @@ def test_cors_preflight_allows_browser_app(client):
     })
     assert r.status_code == 200
     assert r.headers.get("access-control-allow-origin") in ("*", "http://localhost:8081")
+
+
+# ---------- step 25: cache + radius filter ----------
+
+def test_places_outside_radius_are_dropped(client):
+    # 91springboard is ~550 m away; Central Library ~330 m; Vaishali ~10 m.
+    names = [p["name"] for p in post(client, radius_m=400).json()["places"]]
+    assert "91springboard" not in names
+    assert {"Vaishali", "Central Library"} <= set(names)
+
+
+def test_default_fetcher_is_the_cached_one():
+    from services.place_cache import cached_fetch_places
+    assert get_place_fetcher() is cached_fetch_places
