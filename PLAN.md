@@ -258,8 +258,15 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
       the user's full circle is covered, then /nearby drops places beyond the
       real radius. 10-minute TTL, max 256 entries, memory only, nothing
       logged, not tied to a user. 12 new tests (172 total).
-- [ ] 26. Backup places provider when Overpass is down (Geoapify free tier,
+- [x] 26. Backup places provider when Overpass is down (Geoapify free tier,
       see DECISIONS.md) — same {name, type, lat, lon} shape.
+      Files: services/geoapify_client.py, services/places_provider.py,
+          services/place_cache.py
+      Done 2026-11-25: Overpass is tried first; only if every server fails
+      do we ask Geoapify (needs optional GEOAPIFY_API_KEY). Geoapify
+      categories are mapped to the same OSM type keys, so scoring is
+      unchanged. No key or both down -> same friendly 503 as before.
+      16 new tests (188 total). Not yet tried with a real key.
 - [ ] 27. Database migrations (Alembic), so new columns don't need a DB reset.
 - [ ] 28. Deploy the backend online so the app works away from home Wi-Fi.
 
@@ -270,11 +277,12 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 25 (place cache). Phases 1-4 complete, backend AND app
+Last done: step 26 (Geoapify backup places provider). Phases 1-4 complete, backend AND app
 (172 backend tests pass; mobile `tsc --noEmit` clean, re-checked 2026-11-22).
 Next: (a) you add Reddit+YouTube keys (docs/API_KEYS.md) to try live trends;
 (b) test the app on a real phone (development build, see step 14);
-(c) Phase 5 step 26 (backup places provider).
+(c) optional: add a free GEOAPIFY_API_KEY (docs/API_KEYS.md);
+(d) Phase 5 step 27 (database migrations).
 Phase 4 scope: Maharashtra first. Aggregate-only area trends (k-author >= 20),
 occupation model on consent/benchmark/synthetic data only, NO profiling of
 specific strangers (see Phase 4 privacy boundary above).

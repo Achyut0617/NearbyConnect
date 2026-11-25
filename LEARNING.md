@@ -108,5 +108,12 @@
   prove the code does what you said; only real data shows whether what you
   said was a good idea.
 
+- 2026-11-25: Concept: fallback (backup) provider | When the main service
+  (Overpass) fails, try a second one (Geoapify) that returns the SAME data
+  shape, so the rest of the code never knows which one answered. Only
+  "service is down" errors trigger the backup; real bugs (e.g. ValueError)
+  are not hidden. | Lesson: an adapter that converts each provider into
+  one common shape is what makes swapping providers cheap.
+
 ## Still confusing
 - (fill in as we go)

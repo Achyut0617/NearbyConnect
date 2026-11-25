@@ -81,3 +81,10 @@
 - Same demonstrable skills (crawling, cleaning, entity resolution, ranking
   maths, probabilistic classification, evaluation), without the legal/ethical
   landmine. Written up as PLAN.md Phase 4, steps 15-24.
+
+## 2026-11-25 — Step 26: Geoapify as backup only, not primary
+- Overpass stays primary: free, no key, and it's what the scoring rules were
+  tuned on. Geoapify is called only after every Overpass server fails.
+- Geoapify is optional: without GEOAPIFY_API_KEY the app behaves as before.
+- Categories without a clean OSM equivalent are skipped rather than guessed,
+  so a backup result never invents a place type.
