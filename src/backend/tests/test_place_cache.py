@@ -124,3 +124,9 @@ def test_clear_empties_cache():
     cache.clear()
     cache.get(18.52, 73.85, 1000)
     assert len(calls) == 2
+
+
+def test_shared_cache_uses_the_backup_provider():
+    from services.place_cache import place_cache
+    from services.places_provider import fetch_places_with_backup
+    assert place_cache._fetch is fetch_places_with_backup

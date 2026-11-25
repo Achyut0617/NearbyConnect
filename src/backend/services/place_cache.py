@@ -22,7 +22,7 @@ import time
 from collections import OrderedDict
 from typing import Callable
 
-from services.osm_client import fetch_places
+from services.places_provider import fetch_places_with_backup
 
 GRID_DECIMALS = 3          # 0.001 deg lat ~ 111 m
 GRID_MARGIN_M = 100        # covers the ~80 m max shift from snapping
@@ -78,7 +78,8 @@ class PlaceCache:
 
 
 # One shared cache for the running server.
-place_cache = PlaceCache(fetch_places)
+# Overpass first, Geoapify backup (step 26); failures still aren't cached.
+place_cache = PlaceCache(fetch_places_with_backup)
 
 
 def cached_fetch_places(lat: float, lon: float, radius_m: int) -> list[dict]:
