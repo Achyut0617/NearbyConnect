@@ -63,3 +63,18 @@ top 3 keywords per area, so that's plenty for testing.
 
 If a key is missing or wrong, that source is listed under `sources_skipped`
 in the response instead of causing an error.
+
+---
+
+## 3. Geoapify (free, optional backup for places)
+
+Used **only** when the free OpenStreetMap (Overpass) servers are all busy.
+Without it, `/nearby` just says "busy, try again" like before.
+
+1. Sign up at **https://myprojects.geoapify.com** (free plan, no card needed).
+2. Create a project, then copy its **API key**.
+3. In `src/backend/.env`:
+   ```
+   GEOAPIFY_API_KEY=your_key_here
+   ```
+4. Restart the backend. Nothing else changes: places come back in the same shape.
