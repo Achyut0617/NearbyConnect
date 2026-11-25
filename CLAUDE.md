@@ -30,6 +30,8 @@ individuals, no automated follow/connect on any third-party platform.
 - Backend run: `uvicorn main:app --reload`
   (for a phone on the same Wi-Fi: `uvicorn main:app --reload --host 0.0.0.0`)
 - Test: `pytest -q` (from src/backend)
+- DB changes: `alembic revision --autogenerate -m "..."` then `alembic upgrade head`
+  (from src/backend; tables upgrade automatically on server start; see docs/MIGRATIONS.md)
 - Mobile install: `cd src/mobile && npm install`
 - Mobile config: copy `src/mobile/.env.example` to `src/mobile/.env` and set
   EXPO_PUBLIC_API_URL to your computer's Wi-Fi IP, e.g. http://192.168.1.10:8000
