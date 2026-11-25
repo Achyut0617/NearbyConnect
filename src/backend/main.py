@@ -4,13 +4,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from db import create_tables
+from db import migrate_database
 from routers import area, connect, location, people, profile, profiling, push_tokens, sharing
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_tables()  # make sure DB tables exist when the server starts
+    migrate_database()  # create/upgrade DB tables via Alembic (step 27)
     yield
 
 

@@ -45,5 +45,36 @@ def get_db():
 
 def create_tables():
     # Import models so SQLAlchemy knows about every table before creating them.
+    # Used by tests; the real server uses migrate_database() instead.
     import models  # noqa: F401
     Base.metadata.create_all(engine)
+
+
+def migrate_database(target_engine=None) -> str:
+    """Bring the database up to the latest migration (step 27).
+
+    - Empty database          -> run every migration ("upgraded").
+    - Made before step 27 by create_all (tables exist, no alembic_version)
+                              -> mark it as version 0001 first ("adopted"),
+                                 then apply any newer migrations. No data lost.
+    - Already managed         -> apply only the new migrations ("upgraded").
+    """
+    from pathlib import Path
+
+    from alembic import command
+    from alembic.config import Config
+    from sqlalchemy import inspect
+
+    target_engine = target_engine or engine
+    here = Path(__file__).resolve().parent
+    cfg = Config(str(here / "alembic.ini"))
+    cfg.set_main_option("script_location", str(here / "migrations"))
+
+    tables = set(inspect(target_engine).get_table_names())
+    adopted = "users" in tables and "alembic_version" not in tables
+    with target_engine.begin() as conn:
+        cfg.attributes["connection"] = conn
+        if adopted:
+            command.stamp(cfg, "0001")
+        command.upgrade(cfg, "head")
+    return "adopted" if adopted else "upgraded"
