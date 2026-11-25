@@ -11,6 +11,19 @@ of the app (clean, score, rank) does not care where places came from:
 Privacy: like osm_client, we never log the coordinates we are asked about.
 """
 
+import os
+
+import httpx
+
+API_URL = "https://api.geoapify.com/v2/places"
+TIMEOUT_SECONDS = 15
+MAX_RESULTS = 200   # same cap as osm_client
+
+
+class GeoapifyUnavailable(Exception):
+    """No key configured, or the Geoapify request failed."""
+
+
 # Geoapify category -> (OSM tag key, OSM tag value).
 # Only categories we can map cleanly; others are skipped.
 CATEGORY_MAP: dict[str, tuple[str, str]] = {
@@ -87,3 +100,40 @@ def parse_features(data: dict) -> list[dict]:
             "lon": lon,
         })
     return places
+
+
+def fetch_places(lat: float, lon: float, radius_m: int,
+                 client: httpx.Client | None = None,
+                 api_key: str | None = None) -> list[dict]:
+    """Ask Geoapify for named places near (lat, lon).
+
+    Raises GeoapifyUnavailable if no key is set or the request fails.
+    `client` and `api_key` let tests pass fakes; normally leave them as None.
+    """
+    key = api_key if api_key is not None else os.getenv("GEOAPIFY_API_KEY", "")
+    if not key:
+        raise GeoapifyUnavailable("GEOAPIFY_API_KEY is not set")
+    params = {
+        "categories": ",".join(REQUEST_CATEGORIES),
+        "filter": f"circle:{lon},{lat},{radius_m}",   # Geoapify wants lon first
+        "limit": MAX_RESULTS,
+        "apiKey": key,
+    }
+    own_client = client is None
+    if own_client:
+        client = httpx.Client(timeout=TIMEOUT_SECONDS)
+    try:
+        try:
+            resp = client.get(API_URL, params=params)
+        except httpx.HTTPError as e:
+            raise GeoapifyUnavailable(f"request failed: {type(e).__name__}") from e
+        if resp.status_code != 200:
+            raise GeoapifyUnavailable(f"HTTP {resp.status_code}")
+        try:
+            data = resp.json()
+        except ValueError as e:
+            raise GeoapifyUnavailable("response was not JSON") from e
+        return parse_features(data)
+    finally:
+        if own_client:
+            client.close()
