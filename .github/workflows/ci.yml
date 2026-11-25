@@ -29,6 +29,14 @@ jobs:
       - name: Run tests
         run: pytest -q
 
+      - name: Check migrations match the models (step 27)
+        # Fails if someone changed a model but forgot `alembic revision --autogenerate`.
+        env:
+          DATABASE_URL: sqlite:////tmp/ci-migrations.db
+        run: |
+          alembic upgrade head
+          alembic check
+
       - name: Train + evaluate profiling model (smoke)
         run: python -m scripts.train_profiling --n 1000
 

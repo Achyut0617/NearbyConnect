@@ -20,5 +20,6 @@ RUN python -m scripts.train_profiling --n 4000 || echo "model build skipped"
 
 EXPOSE 8000
 
-# DATABASE_URL, REDDIT_*, YOUTUBE_API_KEY, CORS_ORIGINS come from the environment.
+# DATABASE_URL, REDDIT_*, YOUTUBE_API_KEY, GEOAPIFY_API_KEY, CORS_ORIGINS come from
+# the environment. Database tables are created/upgraded by Alembic at startup.
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
