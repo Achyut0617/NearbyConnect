@@ -115,5 +115,13 @@
   are not hidden. | Lesson: an adapter that converts each provider into
   one common shape is what makes swapping providers cheap.
 
+- 2026-11-25: Concept: database migrations (Alembic) | `create_all` only
+  creates MISSING tables; it never adds a new column to an existing table,
+  so before this a model change meant deleting the DB. A migration is a
+  numbered script ("add column X"); the DB remembers which ones it has run
+  in the `alembic_version` table. | Lesson: an existing DB made without
+  migrations is "stamped" (told it's already at version 1), not rebuilt,
+  so no data is lost.
+
 ## Still confusing
 - (fill in as we go)

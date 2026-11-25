@@ -267,7 +267,14 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
       categories are mapped to the same OSM type keys, so scoring is
       unchanged. No key or both down -> same friendly 503 as before.
       16 new tests (188 total). Not yet tried with a real key.
-- [ ] 27. Database migrations (Alembic), so new columns don't need a DB reset.
+- [x] 27. Database migrations (Alembic), so new columns don't need a DB reset.
+      Files: alembic.ini, migrations/, db.py (migrate_database), main.py,
+          tests/test_migrations.py, docs/MIGRATIONS.md, ci.yml
+      Done 2026-11-25: migration 0001 = current users + connect_requests.
+      Server runs `alembic upgrade head` on start; an old create_all DB is
+      adopted (stamped 0001) with its data kept. CI runs `alembic check`, so
+      a model change without a migration fails the build. 5 new tests
+      (193 total).
 - [ ] 28. Deploy the backend online so the app works away from home Wi-Fi.
 
 ## Explicitly deferred / out of scope for now
@@ -277,17 +284,18 @@ Maharashtra, then widen. Build in the order Stage A -> B -> C.
 - Enterprise scaling — revisit after Phase 3 works for ~1 real user (you).
 
 ## Current status
-Last done: step 26 (Geoapify backup places provider). Phases 1-4 complete, backend AND app
-(172 backend tests pass; mobile `tsc --noEmit` clean, re-checked 2026-11-22).
+Last done: step 27 (Alembic migrations); step 26 (Geoapify backup) before it. Phases 1-4 complete, backend AND app
+(193 backend tests pass; mobile `tsc --noEmit` clean, re-checked 2026-11-22).
 Next: (a) you add Reddit+YouTube keys (docs/API_KEYS.md) to try live trends;
 (b) test the app on a real phone (development build, see step 14);
 (c) optional: add a free GEOAPIFY_API_KEY (docs/API_KEYS.md);
-(d) Phase 5 step 27 (database migrations).
+(d) Phase 5 step 28 (deploy the backend online; needs a hosting account).
 Phase 4 scope: Maharashtra first. Aggregate-only area trends (k-author >= 20),
 occupation model on consent/benchmark/synthetic data only, NO profiling of
 specific strangers (see Phase 4 privacy boundary above).
 Deploy: Docker + docker-compose; CI in .github/workflows/ci.yml.
 Known limits: first Overpass lookup per spot still slow / sometimes 503
 (repeats are cached for 10 min); push needs a dev build; profiling
-accuracy numbers are on synthetic data (upper bound); no DB migrations;
+accuracy numbers are on synthetic data (upper bound); Geoapify backup
+untried with a real key;
 Docker build unverified locally (CI builds it) | Blockers: none
