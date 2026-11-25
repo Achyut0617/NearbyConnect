@@ -53,3 +53,37 @@ def osm_type_for(categories: list[str]) -> tuple[str, str] | None:
         if cat in CATEGORY_MAP:
             return CATEGORY_MAP[cat]
     return None
+
+
+def parse_features(data: dict) -> list[dict]:
+    """Turn Geoapify's GeoJSON into the same place list osm_client returns.
+
+    Features with no name, no mappable category or no coordinates are skipped.
+    """
+    places = []
+    for feat in data.get("features", []):
+        props = feat.get("properties") or {}
+        name = props.get("name")
+        if not name:
+            continue
+        osm_type = osm_type_for(props.get("categories") or [])
+        if osm_type is None:
+            continue
+        lat, lon = props.get("lat"), props.get("lon")
+        if lat is None or lon is None:
+            coords = (feat.get("geometry") or {}).get("coordinates") or []
+            if len(coords) != 2:
+                continue
+            lon, lat = coords   # GeoJSON order is [lon, lat]
+        osm = (props.get("datasource") or {}).get("raw") or {}
+        osm_id = (f"{osm.get('osm_type', 'n')}/{osm['osm_id']}" if "osm_id" in osm
+                  else f"geoapify/{props.get('place_id', name)}")
+        places.append({
+            "osm_id": osm_id,
+            "name": name,
+            "type_key": osm_type[0],
+            "type": osm_type[1],
+            "lat": lat,
+            "lon": lon,
+        })
+    return places
