@@ -1,0 +1,5 @@
+Database migrations (Alembic). Run from src/backend:
+
+  alembic upgrade head                       # bring the DB up to date
+  alembic revision --autogenerate -m "msg"   # after changing a model
+  alembic current                            # which version the DB is on
